@@ -1,5 +1,5 @@
 ### 게시글 생성 API
-POST localhost:8080/api/boards
+POST {{endpoint}}/api/boards
 Content-Type: application/json
 
 {
@@ -8,4 +8,4 @@ Content-Type: application/json
 }
 
 ### 게시글 조회 API
-GET localhost:8080/api/boards/1
+GET {{endpoint}}/api/boards/1

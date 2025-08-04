@@ -1,0 +1,11 @@
+### 게시글 생성 API
+POST localhost:8080/api/boards
+Content-Type: application/json
+
+{
+  "title": "title",
+  "content": "content"
+}
+
+### 게시글 조회 API
+GET localhost:8080/api/boards/1

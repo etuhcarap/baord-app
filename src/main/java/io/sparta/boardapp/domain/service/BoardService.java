@@ -1,5 +1,8 @@
 package io.sparta.boardapp.domain.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,5 +30,10 @@ public class BoardService {
 			.map(BoardResponse::from)
 			.orElseThrow(() -> new RuntimeException("존재하지 않는 게시글 입니다."))
 			;
+	}
+
+	public PagedModel<BoardResponse> getBoards(Pageable pageable) {
+		Page<Board> boardPage = boardRepository.findAll(pageable);
+		return new PagedModel<>(boardPage.map(BoardResponse::from));
 	}
 }

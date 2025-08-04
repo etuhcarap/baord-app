@@ -8,10 +8,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.web.PagedModel;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -77,5 +83,30 @@ class BoardControllerTest {
 		// Then
 		resultActions.andDo(print())
 			.andExpect(status().isOk());
+	}
+
+	@Test
+	@DisplayName("[GET:200] 게시글 목록 조회 API")
+	void getBoards() throws Exception {
+		// Given
+		PageRequest pageRequest = PageRequest.of(1, 10);
+		BoardResponse boardResponse = new BoardResponse(1L, TITLE, CONTENT, LocalDateTime.now());
+		List<BoardResponse> content = List.of(boardResponse);
+
+		PagedModel<BoardResponse> boardResponsePagedModel = new PagedModel<>(
+			new PageImpl<>(content, PageRequest.of(1, 10), 1));
+
+		when(boardService.getBoards(pageRequest)).thenReturn(boardResponsePagedModel);
+
+		// When
+		ResultActions resultActions = mockMvc.perform(get("/api/boards")
+			.param("size", String.valueOf(10))
+			.param("page", String.valueOf(1))
+		);
+
+		// Then
+		resultActions.andDo(print())
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.page.totalPages").exists());
 	}
 }

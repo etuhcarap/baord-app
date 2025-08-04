@@ -9,3 +9,7 @@ Content-Type: application/json
 
 ### 게시글 조회 API
 GET {{endpoint}}/api/boards/1
+
+
+### 게시글 목록 조회 API
+GET {{endpoint}}/api/boards

@@ -2,6 +2,9 @@ package io.sparta.boardapp.domain.controller;
 
 import java.net.URI;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,5 +39,11 @@ public class BoardController {
 	ResponseEntity<BoardResponse> getBoard(@PathVariable("id") Long id) {
 		BoardResponse boardResponse = boardService.getBoard(id);
 		return ResponseEntity.ok(boardResponse);
+	}
+
+	@GetMapping
+	ResponseEntity<PagedModel<BoardResponse>> getBoards(@PageableDefault Pageable pageable) {
+		PagedModel<BoardResponse> boardResponses = boardService.getBoards(pageable);
+		return ResponseEntity.ok(boardResponses);
 	}
 }

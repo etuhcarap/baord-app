@@ -3,12 +3,15 @@ package io.sparta.boardapp.domain.controller;
 import java.net.URI;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import io.sparta.boardapp.domain.controller.dto.BoardResponse;
 import io.sparta.boardapp.domain.controller.dto.CreateBoardRequest;
 import io.sparta.boardapp.domain.service.BoardService;
 import lombok.RequiredArgsConstructor;
@@ -27,5 +30,11 @@ public class BoardController {
 
 		return ResponseEntity.created(createdBoardUri)
 			.build();
+	}
+
+	@GetMapping("{id}")
+	ResponseEntity<BoardResponse> getBoard(@PathVariable("id") Long id) {
+		BoardResponse boardResponse = boardService.getBoard(id);
+		return ResponseEntity.ok(boardResponse);
 	}
 }

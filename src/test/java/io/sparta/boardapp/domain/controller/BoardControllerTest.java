@@ -4,6 +4,7 @@ import static io.sparta.boardapp.fixture.BoardFixtureGenerator.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.HttpHeaders.*;
 import static org.springframework.http.MediaType.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -19,7 +20,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.sparta.boardapp.domain.controller.dto.BoardResponse;
 import io.sparta.boardapp.domain.controller.dto.CreateBoardRequest;
+import io.sparta.boardapp.domain.model.Board;
 import io.sparta.boardapp.domain.service.BoardService;
 
 @DisplayName("Controller:Board")
@@ -56,5 +59,23 @@ class BoardControllerTest {
 			.andExpect(status().isCreated())
 			.andExpect(header().exists(LOCATION))
 		;
+	}
+
+	@Test
+	@DisplayName("[GET:200] 게시글 조회 API")
+	void getBoard() throws Exception {
+		// Given
+		Long id = 1L;
+		Board fixture = createFixture();
+		BoardResponse boardResponse = BoardResponse.from(fixture);
+
+		when(boardService.getBoard(id)).thenReturn(boardResponse);
+
+		// When
+		ResultActions resultActions = mockMvc.perform(get("/api/boards/{id}", id));
+
+		// Then
+		resultActions.andDo(print())
+			.andExpect(status().isOk());
 	}
 }

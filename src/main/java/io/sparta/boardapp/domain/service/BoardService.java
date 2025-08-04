@@ -3,6 +3,7 @@ package io.sparta.boardapp.domain.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.sparta.boardapp.domain.controller.dto.BoardResponse;
 import io.sparta.boardapp.domain.model.Board;
 import io.sparta.boardapp.domain.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,5 +20,12 @@ public class BoardService {
 		boardRepository.save(board);
 
 		return board.getId();
+	}
+
+	public BoardResponse getBoard(Long id) {
+		return boardRepository.findById(id)
+			.map(BoardResponse::from)
+			.orElseThrow(() -> new RuntimeException("존재하지 않는 게시글 입니다."))
+			;
 	}
 }

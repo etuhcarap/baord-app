@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: board-app
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+        highlight_sql: true

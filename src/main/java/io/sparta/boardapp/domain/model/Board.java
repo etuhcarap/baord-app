@@ -33,4 +33,9 @@ public class Board extends BaseEntity {
 	public static Board of(String title, String content) {
 		return new Board(title, content);
 	}
+
+	public void update(String newTitle, String newContent) {
+		this.title = newTitle;
+		this.content = newContent;
+	}
 }

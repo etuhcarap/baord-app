@@ -44,6 +44,6 @@ jobs:
         run: |
           aws deploy create-deployment \
             --application-name board-app \
-            --deployment-group-name board-app-ec2 \
+            --deployment-group-name Dev \
             --deployment-config-name CodeDeployDefault.AllAtOnce \
             --s3-location bucket=board-app-artifact,bundleType=tgz,key=${GITHUB_SHA}.tar.gz

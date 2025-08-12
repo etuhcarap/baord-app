@@ -17,38 +17,35 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: 파일 전송을 위한 디렉토리 생성
-        run: mkdir ./board-app # .env, app.jar
-
       - name: Gradle Build
         run: ./gradlew clean build
 
       - name: Archive 파일명 변경
-        run: mv ./build/libs/*SNAPSHOT.jar ./board-app/app.jar
+        run: mv ./build/libs/*SNAPSHOT.jar ./app.jar
 
       - name: github secrets에 저장된 ENV_PROPERTIES를 읽어서 .env 생성
-        run: echo "${{ secrets.ENV_PROPERTIES }}" > ./board-app/.env
+        run: echo "${{ secrets.ENV_PROPERTIES }}" > ./.env
 
-      - name: .env와 app.jar를 ec2에 전송
-        uses: appleboy/scp-action@v1
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PEM_KEY }}
-          source: ./board-app
-          target: /home/ec2-user/deploy
+      - name: S3 파일 전송을 위한 압축
+        run: tar -czvf $GITHUB_SHA.tar.gz app.jar appspec.yml deploy.sh .env
 
-      - name: SSH를 통해 EC2에 접속 후 서비스 재 시작
-        uses: appleboy/ssh-action@v1
+      - name: Code Deploy 호출
+        run: some command
+
+      - name: Github Actions에게 부여한 IAM User을 이용하여 AWS Resources에 접근하기 위한 Credential 설정
+        uses: aws-actions/configure-aws-credentials@v4.3.1
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PEM_KEY }}
-          script: |
-            rm -rf /home/ec2-user/board-app
-            mkdir /home/ec2-user/board-app
-            mv /home/ec2-user/deploy/board-app /home/ec2-user
-            cd /home/ec2-user/board-app
-            sudo fuser -k -n tcp 8080 || true
-            nohup java -jar /home/ec2-user/board-app/app.jar > application-log 2>&1 &
-            rm -rf /home/ec2-user/deploy
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: AWS Cli를 이용하여 S3에 압축 파일 전송
+        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.tar.gz s3://board-app-artifact/$GITHUB_SHA.tar.gz
+
+      - name: CodeDeploy를 이용한 EC2 배포 프로세스 시작
+        run: |
+          aws deploy create-deployment \
+            --application-name board-app \
+            --deployment-group-name Dev \
+            --deployment-config-name CodeDeployDefault.AllAtOnce \
+            --s3-location bucket=board-app-artifact,bundleType=tgz,key=${GITHUB_SHA}.tar.gz

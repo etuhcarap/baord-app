@@ -41,9 +41,8 @@ jobs:
         run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.tar.gz s3://board-app-artifact/$GITHUB_SHA.tar.gz
 
       - name: CodeDeploy를 이용한 EC2 배포 프로세스 시작
-        run: |
-          aws deploy create-deployment \
-            --application-name board-app \
-            --deployment-group-name board-app-ec2 \
-            --deployment-config-name CodeDeployDefault.AllAtOnce \
-            --s3-location bucket=board-app-artifact,bundleType=tgz,key=${GITHUB_SHA}.tar.gz
+        run: aws deploy create-deployment
+          --application-name board-app
+          --deployment-config-name CodeDeployDefault.AllAtOnce
+          --deployment-group-name
+          --s3-location bucket=board-app-artifact,bundleType=tgz,key=$GITHUB_SHA.tar.gz

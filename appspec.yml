@@ -1,6 +1,8 @@
 version: 0.0
 os: linux
 
+file_exists_behavior: OVERWRITE
+
 # 배포 파일 이동 경로 설정
 files:
   - sources: / # S3에 저장된 배포 파일 경로 ('/'는 해당경로의 전체 파일)
@@ -8,9 +10,11 @@ files:
 
 # CodeDeploy가 사용할 EC2 사용자 권한 지정
 permissions:
-  - object: /
+  - object: /home/ec2-user/board-app
+    pattern: "**"       # 목적지 내부 전체 파일에 적용
     owner: ec2-user
     group: ec2-user
+    mode: 755
 
 # CodeDeploy가 `특정 시점에 실행할 행동`(hook) 설정
 hooks:

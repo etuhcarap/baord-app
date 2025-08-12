@@ -29,9 +29,6 @@ jobs:
       - name: S3 파일 전송을 위한 압축
         run: tar -czvf $GITHUB_SHA.tar.gz app.jar appspec.yml deploy.sh .env
 
-      - name: Code Deploy 호출
-        run: some command
-
       - name: Github Actions에게 부여한 IAM User을 이용하여 AWS Resources에 접근하기 위한 Credential 설정
         uses: aws-actions/configure-aws-credentials@v4.3.1
         with:

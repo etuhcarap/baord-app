@@ -38,7 +38,7 @@ jobs:
           aws-region: ap-northeast-2
 
       - name: AWS Cli를 이용하여 S3에 압축 파일 전송
-        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.tar.gz s3://board-app-artifact/$GITHUB_SHA.tar.gz
+        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.tar.gz s3://board-app/$GITHUB_SHA.tar.gz
 
       - name: CodeDeploy를 이용한 EC2 배포 프로세스 시작
         run: aws deploy create-deployment

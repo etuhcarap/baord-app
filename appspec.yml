@@ -15,6 +15,6 @@ permissions:
 # CodeDeploy가 `특정 시점에 실행할 행동`(hook) 설정
 hooks:
   ApplicationStart:
-    - location: scripts/deploy.sh
+    - location: deploy.sh
       timeout: 60
       runas: ec2-user # 해당 행동을 실행할 사용자 권한 지정

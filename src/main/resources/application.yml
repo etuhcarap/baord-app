@@ -19,3 +19,13 @@ spring:
       hibernate:
         format_sql: true
         highlight_sql: true
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      default-ttl-minutes: 1
+
+logging:
+  level:
+    org.springframework.cache: trace

@@ -52,6 +52,12 @@ public class BoardController {
 		return ResponseEntity.ok(boardResponse);
 	}
 
+	@GetMapping("{id}/cache-aside")
+	ResponseEntity<BoardResponse> getBoardWithRedisTemplate(@PathVariable("id") Long id) {
+		BoardResponse boardResponse = boardService.getBoardWithCacheAside(id);
+		return ResponseEntity.ok(boardResponse);
+	}
+
 	@GetMapping
 	ResponseEntity<PagedModel<BoardResponse>> getBoards(@PageableDefault Pageable pageable) {
 		PagedModel<BoardResponse> boardResponses = boardService.getBoards(pageable);
